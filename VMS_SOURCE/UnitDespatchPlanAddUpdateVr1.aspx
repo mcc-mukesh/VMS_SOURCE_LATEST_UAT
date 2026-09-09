@@ -18,8 +18,8 @@
             }
             else if (event.keyCode == 119) { // button Search (F8 keypress)
                 var c = document.getElementById('<%= btnCancel.ClientID %>');
-                if (c) { c.click(); }
-            }
+                    if (c) { c.click(); }
+                }
         }
 
         function disableBackButton() {
@@ -85,7 +85,22 @@
         });
     </script>
     <script src="Scripts/ValidateUnitDespatchAddUpdate.js?time=<%=  DateTime.Now.ToString("yyyy.MM.dd-HH.mm.ss.fff") %>" type="text/javascript"></script>
+    <style>
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            appearance: none;
+            margin: 0;
+        }
 
+        .txtBox {
+            width: 100% !important;
+            min-width: 110px !important;
+            border: 1px solid #c5c5c5;
+            border-radius: 5px;
+            padding: 4px 5px;
+        }
+    </style>
     <div class="breadcrumbs">
         <div class="leftFung">
             <a href="Home.aspx" title="Home"><i class="fas fa-home"></i></a>
@@ -441,15 +456,7 @@
                             </asp:LinkButton>
                         </div>
                     </div>
-                </div>
-                <%-- Modified-by MUKESH BHAGAT on 24-08-2026 : optional E-Way bill document.
-                     Saved next to the invoice copy under Challan_Docs\<dd_MM_yyyy>.
-                     Modified-by MUKESH BHAGAT on 27-08-2026 : moved out of the "E-Way Bill No"
-                     column into its own column beside the invoice upload, so the two upload
-                     fields line up and the top row keeps a uniform height. --%>
-                <div class="col-md-6">
                     <div class="form-group">
-
                         <asp:UpdatePanel ID="UpdatePanelEway" runat="server" style="display: flex; align-items: center; gap: 30px;">
                             <ContentTemplate>
                                 <div style="width: 48%">
@@ -464,7 +471,7 @@
                                      name above the download button. --%>
                                 <div>
                                     <asp:Label ID="lblEwayDocName" runat="server" Visible="false"
-                                        Style="display: block; font-size: 11px; color: #6c757d; margin-top: 4px;white-space: nowrap;"></asp:Label>
+                                        Style="display: block; font-size: 11px; color: #6c757d; margin-top: 4px; white-space: nowrap;"></asp:Label>
                                     <asp:LinkButton ID="lnkDownloadEway" runat="server" Visible="false"
                                         CssClass="btn btn-primary btn-sm" CausesValidation="false"
                                         OnClick="lnkDownloadEway_Click"
@@ -481,6 +488,41 @@
                         </asp:UpdatePanel>
                     </div>
                 </div>
+                <%-- Modified-by MUKESH BHAGAT on 24-08-2026 : optional E-Way bill document.
+                     Saved next to the invoice copy under Challan_Docs\<dd_MM_yyyy>.
+                     Modified-by MUKESH BHAGAT on 27-08-2026 : moved out of the "E-Way Bill No"
+                     column into its own column beside the invoice upload, so the two upload
+                     fields line up and the top row keeps a uniform height. --%>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-control-label">Invoicing Depot GSTN:<span class="mandatory">*</span></label>
+                                <asp:UpdatePanel ID="UpdatePanelDepotGstn" runat="server" UpdateMode="Always">
+                                    <ContentTemplate>
+                                        <asp:TextBox ID="txtDepotGstn" runat="server" CssClass="form-control" ReadOnly="true"></asp:TextBox>
+                                    </ContentTemplate>
+                                    <Triggers>
+                                        <asp:AsyncPostBackTrigger ControlID="ddlDeliveryDepot" EventName="SelectedIndexChanged" />
+                                        <asp:AsyncPostBackTrigger ControlID="ddlSite" EventName="SelectedIndexChanged" />
+                                    </Triggers>
+                                </asp:UpdatePanel>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-control-label">Supplier GSTN:<span class="mandatory">*</span></label>
+                                <asp:UpdatePanel ID="UpdatePanelSupplierGstn" runat="server" UpdateMode="Always">
+                                    <ContentTemplate>
+                                        <asp:TextBox ID="txtSupplierGstn" runat="server" CssClass="form-control" ReadOnly="true"></asp:TextBox>
+                                    </ContentTemplate>
+                                    <Triggers>
+                                        <asp:AsyncPostBackTrigger ControlID="ddlDeliveryDepot" EventName="SelectedIndexChanged" />
+                                        <asp:AsyncPostBackTrigger ControlID="ddlSite" EventName="SelectedIndexChanged" />
+                                    </Triggers>
+                                </asp:UpdatePanel>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <%-- Modified-by MUKESH BHAGAT on 24-08-2026 : GSTN of the invoicing depot (from the depot
@@ -490,34 +532,15 @@
                  ddlDeliveryDepot and ddlSite post back asynchronously, so anything outside an
                  UpdatePanel is never re-rendered - the server was setting these values correctly but
                  the browser never received them, which is why the Depot GSTN stayed blank. --%>
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label class="form-control-label">Invoicing Depot GSTN:<span class="mandatory">*</span></label>
-                        <asp:UpdatePanel ID="UpdatePanelDepotGstn" runat="server" UpdateMode="Always">
-                            <ContentTemplate>
-                                <asp:TextBox ID="txtDepotGstn" runat="server" CssClass="form-control" ReadOnly="true"></asp:TextBox>
-                            </ContentTemplate>
-                            <Triggers>
-                                <asp:AsyncPostBackTrigger ControlID="ddlDeliveryDepot" EventName="SelectedIndexChanged" />
-                                <asp:AsyncPostBackTrigger ControlID="ddlSite" EventName="SelectedIndexChanged" />
-                            </Triggers>
-                        </asp:UpdatePanel>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label class="form-control-label">Supplier GSTN:<span class="mandatory">*</span></label>
-                        <asp:UpdatePanel ID="UpdatePanelSupplierGstn" runat="server" UpdateMode="Always">
-                            <ContentTemplate>
-                                <asp:TextBox ID="txtSupplierGstn" runat="server" CssClass="form-control" ReadOnly="true"></asp:TextBox>
-                            </ContentTemplate>
-                            <Triggers>
-                                <asp:AsyncPostBackTrigger ControlID="ddlDeliveryDepot" EventName="SelectedIndexChanged" />
-                                <asp:AsyncPostBackTrigger ControlID="ddlSite" EventName="SelectedIndexChanged" />
-                            </Triggers>
-                        </asp:UpdatePanel>
-                    </div>
+
+
+            <%-- Modified-by MUKESH BHAGAT on 08-09-2026 : full-page blocking loader shown while the
+                 uploaded bill is being validated by OCR (same look as the master page UpdateProgress),
+                 so the user can neither edit fields nor miss that something is in progress. --%>
+            <div id="divOcrLoader" class="pageLoader" style="display: none;">
+                <div class="innerLoader">
+                    <img class="loaderImg" alt="progress" src="images/ajax-loader.gif" />
+                    <p class="loaderTx">Validating the uploaded invoice, please wait...</p>
                 </div>
             </div>
 
@@ -682,7 +705,7 @@
                                 <asp:TemplateField HeaderText="This Despatch" HeaderStyle-HorizontalAlign="Center">
                                     <ItemTemplate>
                                         <asp:TextBox ID="txtThisDesp" CssClass="txtBox" runat="server" Text='<%# Bind("pendingLoad") %>' TextMode="Number"
-                                            Width="45px" MaxLength="30" Enabled="False"></asp:TextBox>
+                                            MaxLength="30" Enabled="False"></asp:TextBox>
                                     </ItemTemplate>
                                     <FooterTemplate>
                                         <asp:Label ID="lblftrThisDesp" runat="server" Text=''></asp:Label>
@@ -1041,9 +1064,32 @@
             return found ? total : NaN;
         }
 
+        // Modified-by MUKESH BHAGAT on 09-09-2026 : 'Y' = validated against the bill,
+        // 'N' = not validated, 'S' = user chose to save although the bill could not be validated.
         function ocrSetVerified(flag) {
             var h = ocrEl('<%= hdnOcrVerified.ClientID %>');
-            if (h) { h.value = flag ? 'Y' : 'N'; }
+            if (h) { h.value = (flag === 'S') ? 'S' : (flag ? 'Y' : 'N'); }
+        }
+
+        // Modified-by MUKESH BHAGAT on 09-09-2026 : when the bill cannot be validated - the OCR
+        // service is down, or it cannot read the PDF (scanned image, unusual layout) - the user
+        // is no longer blocked. The save goes ahead only after an explicit confirmation, the same
+        // way the optional checks (quantity / GSTN / E-Way no) are accepted. Cancel holds the save.
+        function ocrConfirmUnverifiedSave(reasons, btn) {
+            var proceed = window.confirm(
+                'Invoice validation could not be completed.\n\n- ' + reasons.join('\n- ') +
+                '\n\nThe Invoice No, Invoice Date and Final Invoice Value you entered could NOT be verified against the uploaded PDF.' +
+                '\nYou may still save this despatch challan with the PDF attached, but you do so at your own risk - ' +
+                'please double-check the entered details before continuing.' +
+                '\n\nDo you want to save anyway?');
+            if (!proceed) {
+                ocrSetVerified(false);
+                ocrMsg('Save cancelled: the uploaded invoice could not be validated. Please check the PDF and try again.', 'danger');
+                return;
+            }
+            ocrSetVerified('S');
+            ocrMsg('Saving without invoice validation - accepted by user.', 'info');
+            ocrContinueSubmit(btn);
         }
 
         // Any manual edit after a successful check invalidates the verification, so the
@@ -1103,12 +1149,16 @@
 
         // Modified-by MUKESH BHAGAT on 31-08-2026 : while the bill is being validated the
         // user must not be able to Delete or Cancel out from under the pending save.
+        // Modified-by MUKESH BHAGAT on 08-09-2026 : also raise/lower the full-page loader so
+        // every field on the page is blocked (not just the three buttons) while the check runs.
         function ocrLockActions(lock) {
             var ids = ['<%= btnSubmit.ClientID %>', '<%= btnDelete.ClientID %>', '<%= btnCancel.ClientID %>'];
             for (var i = 0; i < ids.length; i++) {
                 var el = ocrEl(ids[i]);
                 if (el) { el.disabled = lock; }
             }
+            var loader = ocrEl('divOcrLoader');
+            if (loader) { loader.style.display = lock ? 'flex' : 'none'; }
         }
 
         function triggerInvoiceOcrUpload(fileUpload, btn) {
@@ -1133,13 +1183,12 @@
                 if (xhr.status === 200 && result && result.success) {
                     applyInvoiceOcrResult(result, fileUpload, btn);
                 } else if (result && result.message) {
-                    // the service answered and rejected the document -> block the save
-                    ocrSetVerified(false);
-                    fileUpload.value = '';
-                    ocrMsg('Bill rejected: ' + result.message, 'danger');
+                    // Modified-by MUKESH BHAGAT on 09-09-2026 : the service answered but could not
+                    // read the document -> no longer a hard block; the user decides (with warning).
+                    ocrConfirmUnverifiedSave(['The uploaded PDF could not be read: ' + result.message], btn);
                 } else if (OCR_FAIL_OPEN) {
-                    // the service itself failed -> do not hold up the despatch
-                    ocrContinueSubmit(btn);
+                    // the service itself failed -> do not hold up the despatch, but say so
+                    ocrConfirmUnverifiedSave(['The invoice validation service is not available right now.'], btn);
                 } else {
                     ocrMsg('Invoice validation service is unavailable. Please try again.', 'danger');
                 }
@@ -1148,7 +1197,7 @@
             xhr.onerror = function () {
                 ocrLockActions(false);
                 if (OCR_FAIL_OPEN) {
-                    ocrContinueSubmit(btn);
+                    ocrConfirmUnverifiedSave(['The invoice validation service could not be reached.'], btn);
                 } else {
                     ocrMsg('Invoice validation service is unavailable. Please try again.', 'danger');
                 }
@@ -1178,12 +1227,13 @@
             var txtInvDate = ocrEl('<%= txtCenvatDt.ClientID %>');
             var txtValue = ocrEl('<%= txtFinalInvoiceValue.ClientID %>');
 
-            var errors = [];
+            var errors = [];       // value READ from the bill and it differs -> save blocked
+            var unreadable = [];   // value could NOT be read -> user may save after a warning (09-09-2026)
             var warnings = [];
 
             // ---- Invoice number : mandatory, must match exactly ----
             if (!ocrInvNo) {
-                errors.push('Invoice number could not be read from the bill.');
+                unreadable.push('Invoice number could not be read from the bill.');
             } else if (ocrNormalizeText(txtInvNo.value) === '') {
                 txtInvNo.value = ocrInvNo;                       // empty -> fill from the bill
             } else if (ocrNormalizeText(txtInvNo.value) !== ocrNormalizeText(ocrInvNo)) {
@@ -1192,7 +1242,7 @@
 
             // ---- Invoice date : mandatory, must match exactly ----
             if (!ocrInvDate) {
-                errors.push('Invoice date could not be read from the bill.');
+                unreadable.push('Invoice date could not be read from the bill.');
             } else if (ocrNormalizeText(txtInvDate.value) === '') {
                 txtInvDate.value = ocrInvDate;
             } else if (ocrNormalizeDate(txtInvDate.value) !== ocrInvDate) {
@@ -1203,7 +1253,7 @@
             var ocrGrossNum = ocrToNumber(ocrGross);
             if (isNaN(ocrGrossNum)) {
                 if (OCR_REQUIRE_GROSS_VALUE) {
-                    errors.push('Gross value could not be read from the bill.');
+                    unreadable.push('Gross value could not be read from the bill.');
                 }
             } else if (ocrToNumber(txtValue.value) === 0 || txtValue.value === '') {
                 txtValue.value = ocrGrossNum;
@@ -1248,12 +1298,20 @@
             }
 
             if (errors.length > 0) {
-                // mandatory check failed -> the save is blocked and, only now, the user is
-                // shown what the bill contains alongside the reasons
+                // a value was read from the bill and it does not match -> the save is blocked
+                // and, only now, the user is shown what the bill contains alongside the reasons
                 ocrSetVerified(false);
                 fileUpload.value = '';
                 ocrEl('divInvoiceOcrPanel').style.display = '';
-                ocrMsg('Bill rejected: ' + errors.join(' ') + ' Please correct the details and upload the correct bill.', 'danger');
+                ocrMsg('Bill rejected: ' + errors.concat(unreadable).join(' ') + ' Please correct the details and upload the correct bill.', 'danger');
+                return;
+            }
+
+            // Modified-by MUKESH BHAGAT on 09-09-2026 : nothing contradicts the entry, but the bill
+            // could not be fully read -> show what was read and let the user decide (with warning).
+            if (unreadable.length > 0) {
+                ocrEl('divInvoiceOcrPanel').style.display = '';
+                ocrConfirmUnverifiedSave(unreadable.concat(warnings), btn);
                 return;
             }
 
