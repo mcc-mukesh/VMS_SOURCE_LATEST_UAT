@@ -171,10 +171,41 @@ Partial Class VendorWiseBrandLoadSummary
 
     End Function
 
+    ' Modified-by MUKESH BHAGAT on 15-09-2026 : Serviceability (%) as a colored status pill -
+    ' same 4-tier thresholds/colors as the Dispatch % badge on Home.aspx / VendorWiseLoadSummary.aspx.
+    ' Also sets the number of filled sticks (0-10) on the progress bar from the actual percentage.
+    Protected Sub gvFgVendorlist_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+        If e.Row.RowType <> DataControlRowType.DataRow Then Exit Sub
+
+        Dim lblServiceability As Label = CType(e.Row.FindControl("lblServiceability"), Label)
+        If lblServiceability Is Nothing Then Exit Sub
+
+        Dim pct As Decimal
+        If Not Decimal.TryParse(lblServiceability.Text.Replace("%", "").Trim(), pct) Then Exit Sub
+
+        Dim pillClass As String
+        If pct = 0 Then
+            pillClass = "pct-pill-danger"
+        ElseIf pct < 50 Then
+            pillClass = "pct-pill-warning"
+        ElseIf pct < 80 Then
+            pillClass = "pct-pill-info"
+        Else
+            pillClass = "pct-pill-success"
+        End If
+
+        ' 10 sticks = 100%, 1 stick per 10% (any value above 0 lights at least 1 stick)
+        Dim clamped As Decimal = Math.Min(100D, Math.Max(0D, pct))
+        Dim sticks As Integer = CInt(Math.Ceiling(clamped / 10D))
+
+        lblServiceability.CssClass = "pct-pill " & pillClass & " pct-n-" & sticks.ToString()
+        lblServiceability.Text = pct.ToString("0.00") & "%"
+    End Sub
+
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         gvFgVendorlist.PageIndex = 0
         'SaveSearchCriteria()
-        'BindGrid()
+        LoadData()
     End Sub
     Protected Sub btnReset_Click(sender As Object, e As EventArgs)
         'Session("PaymentReconciliationSearchCriteria") = Nothing
@@ -182,6 +213,10 @@ Partial Class VendorWiseBrandLoadSummary
         'txtFromDate.Text = String.Empty
         'txtToDate.Text = String.Empty
         gvFgVendorlist.PageIndex = 0
-        'BindGrid()
+        LoadData()
+    End Sub
+
+    Protected Sub btnBack_Click(sender As Object, e As EventArgs)
+        Response.Redirect("Home.aspx")
     End Sub
 End Class
